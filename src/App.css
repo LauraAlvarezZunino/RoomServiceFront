@@ -1,42 +1,101 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  min-height: 100vh;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  .MuiDrawer-root {
+    width: 250px;
+  }
+
+  .MuiDrawer-paper {
+    width: 250px;
+  }
+}
+
+@media (max-width: 600px) {
+  .MuiAppBar-root {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .MuiDrawer-paper {
+    width: 100%;
+  }
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #616161;
+}
+
+/* Utility classes */
+.text-center {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.mb-2 {
+  margin-bottom: 16px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.mb-3 {
+  margin-bottom: 24px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.mt-2 {
+  margin-top: 16px;
 }
 
-.card {
-  padding: 2em;
+.mt-3 {
+  margin-top: 24px;
 }
 
-.read-the-docs {
-  color: #888;
+/* Card styles */
+.MuiCard-root {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+.MuiCard-root:hover {
+  background-color: #2a2a2a;
+}
+
+/* Button styles */
+.MuiButton-root {
+  text-transform: none;
+}
+
+/* Table styles */
+.MuiTableHead-root .MuiTableCell-root {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: #2a2a2a;
 }

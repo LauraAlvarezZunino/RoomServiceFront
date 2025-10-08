@@ -1,65 +1,52 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { Box } from '@mui/material';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import Dashboard from './pages/Dashboard';
+import Rooms from './pages/Rooms';
+import Reservations from './pages/Reservations';
+import Users from './pages/Users';
 
-// Importar las páginas desde la carpeta 'paginas'
-import ListadoHabitaciones from './paginas/ListadoHabitaciones';
-import DetalleHabitacion from './paginas/DetalleHabitacion';
-import Autenticacion from './paginas/Autenticacion';
-
-// --- Definición del Tema Oscuro ---
-const temaOscuro = createTheme({
+// Light theme configuration
+const lightTheme = createTheme({
   palette: {
-    mode: 'dark', // Modo oscuro activado
+    mode: 'light',
     primary: {
-      main: '#90caf9', // Azul claro
+      main: '#1b1615ff',
     },
     secondary: {
-      main: '#f48fb1', // Rosa
+      main: '#dc004e',
     },
     background: {
-      default: '#121212', // Fondo general
-      paper: '#1d1d1d',   // Fondo de cards y contenedores
-    },
-    text: {
-      primary: '#e0e0e0',
-      secondary: '#a0a0a0',
+      default: '#f5f5f5',
+      paper: '#ffffff',
     },
   },
   typography: {
     fontFamily: 'Roboto, sans-serif',
   },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: { borderRadius: 8 },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-        },
-      },
-    },
-  },
 });
 
 function App() {
   return (
-    <ThemeProvider theme={temaOscuro}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
-      
       <Router>
-        <Routes>
-          {/* Rutas principales */}
-          <Route path="/" element={<ListadoHabitaciones />} />
-          <Route path="/habitacion/:id" element={<DetalleHabitacion />} />
-          <Route path="/auth" element={<Autenticacion />} />
-          
-          {/* Se recomienda agregar una ruta de 404 aquí */}
-        </Routes>
+        <div style={{ display: 'flex', minHeight: '100vh' }}>
+          <Header />
+          <Sidebar />
+          <main style={{ flexGrow: 1, padding: '24px', marginTop: '64px' }}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/rooms" element={<Rooms />} />
+              <Route path="/reservations" element={<Reservations />} />
+              <Route path="/users" element={<Users />} />
+            </Routes>
+          </main>
+        </div>
       </Router>
     </ThemeProvider>
   );

@@ -43,8 +43,8 @@ export default function FormularioReserva({ habitacionId, alConfirmarReserva }) 
               label="Fecha de Entrada"
               value={fechaEntrada}
               onChange={(newValue) => establecerFechaEntrada(newValue)}
-              renderInput={(params) => <TextField {...params} fullWidth color="primary" />}
-              minDate={moment()} 
+              renderInput={(params) => <TextField {...params} fullWidth color="primary" id="fechaEntrada" name="fechaEntrada" />}
+              minDate={moment()}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -52,9 +52,9 @@ export default function FormularioReserva({ habitacionId, alConfirmarReserva }) 
               label="Fecha de Salida"
               value={fechaSalida}
               onChange={(newValue) => establecerFechaSalida(newValue)}
-              renderInput={(params) => <TextField {...params} fullWidth color="primary" />}
+              renderInput={(params) => <TextField {...params} fullWidth color="primary" id="fechaSalida" name="fechaSalida" />}
               // Debe ser al menos un día después de la entrada
-              minDate={fechaEntrada ? moment(fechaEntrada).add(1, 'day') : moment().add(1, 'day')} 
+              minDate={fechaEntrada ? moment(fechaEntrada).add(1, 'day') : moment().add(1, 'day')}
             />
           </Grid>
         </Grid>
