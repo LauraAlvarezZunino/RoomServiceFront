@@ -5,20 +5,32 @@ import {
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import HotelIcon from '@mui/icons-material/Hotel'; // Para la capacidad
 import EditIcon from '@mui/icons-material/Edit'; // Para el botón de editar
+import DeleteIcon from '@mui/icons-material/Delete'; // Para el botón de eliminar
 import { useAuth } from '../contexts/AuthContext';
 
 // Función auxiliar para renderizar el botón de acción
-const renderActions = (room, isAdmin, onEdit) => {
+const renderActions = (room, isAdmin, onEdit, onDelete) => {
   if (isAdmin) {
     return (
-      <Button
-        size="small"
-        color="primary"
-        onClick={() => onEdit(room)}
-        startIcon={<EditIcon />}
-      >
-        Editar
-      </Button>
+      <>
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => onEdit(room)}
+          startIcon={<EditIcon />}
+          sx={{ mr: 1 }}
+        >
+          Editar
+        </Button>
+        <Button
+          size="small"
+          color="error"
+          onClick={() => onDelete(room)}
+          startIcon={<DeleteIcon />}
+        >
+          Eliminar
+        </Button>
+      </>
     );
   }
 
@@ -39,7 +51,7 @@ const renderActions = (room, isAdmin, onEdit) => {
   );
 };
 
-export default function RoomCard({ room, onEdit }) {
+export default function RoomCard({ room, onEdit, onDelete }) {
   const { isAdmin } = useAuth();
   
   // Asumiendo que 'room.capacidad' existe y es el número de huéspedes
@@ -51,8 +63,7 @@ export default function RoomCard({ room, onEdit }) {
         height: '100%', 
         display: 'flex', 
         flexDirection: 'column',
-        // Efecto visual si no está disponible
-        opacity: isAvailable ? 1 : 0.7, 
+       
     }}>
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography gutterBottom variant="h5" component="h2" color="primary">
@@ -73,32 +84,12 @@ export default function RoomCard({ room, onEdit }) {
           <span style={{ fontWeight: 'bold' }}>${room.precio}</span> / noche
         </Typography>
 
-        <Typography variant="body1" color="text.primary" sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <HotelIcon sx={{ mr: 1, color: 'info.main' }} /> 
-          Capacidad: {capacidad} {capacidad > 1 ? 'huéspedes' : 'huésped'}
-        </Typography>
+      
         
-        <Divider sx={{ mb: 1 }} />
-
-        {/* Estado visible para todos (MEJORA CLAVE) */}
-        <Chip
-          label={room.estado}
-          color={isAvailable ? 'success' : 'error'}
-          variant={isAdmin ? 'filled' : 'outlined'} // El admin lo ve más destacado
-          size="small"
-          sx={{ mt: 1 }}
-        />
-
-        {/* Info extra de administración (opcional) */}
-        {isAdmin && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-              Última limpieza: {room.ultimaLimpieza || 'N/A'} 
-            </Typography>
-        )}
 
       </CardContent>
       <CardActions sx={{ justifyContent: 'flex-end', borderTop: '1px solid rgba(0, 0, 0, 0.12)' }}>
-        {renderActions(room, isAdmin, onEdit)}
+        {renderActions(room, isAdmin, onEdit, onDelete)}
       </CardActions>
     </Card>
   );

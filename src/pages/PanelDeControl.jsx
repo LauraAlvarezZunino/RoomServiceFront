@@ -6,7 +6,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useAuth } from '../contexts/AuthContext';
 
-const Dashboard = () => {
+const PanelDeControl = () => {
   const { user, isAdmin } = useAuth();
 
   const adminStats = [
@@ -26,7 +26,7 @@ const Dashboard = () => {
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 2 }}>
-        Dashboard - {isAdmin ? 'Administrador' : 'Usuario'}
+        Panel de Control - {isAdmin ? 'Administrador' : 'Usuario'}
       </Typography>
       <Typography variant="h6" gutterBottom>
         Bienvenido, {user?.nombreApellido}
@@ -50,23 +50,9 @@ const Dashboard = () => {
           </Grid>
         ))}
       </Grid>
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" component="h2" gutterBottom>
-          {isAdmin ? 'Actividad Reciente' : 'Mis Reservas Recientes'}
-        </Typography>
-        <Card>
-          <CardContent>
-            <Typography variant="body1">
-              {isAdmin
-                ? 'Aquí se mostrarían las actividades recientes del sistema, como nuevas reservas, check-ins, etc.'
-                : 'Aquí se mostrarían tus reservas recientes y próximas.'
-              }
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
+   
     </Container>
   );
 };
 
-export default Dashboard;
+export default PanelDeControl;

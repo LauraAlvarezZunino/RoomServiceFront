@@ -7,11 +7,12 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import Dashboard from './pages/Dashboard';
-import Rooms from './pages/Rooms';
-import Reservations from './pages/Reservations';
-import Users from './pages/Users';
+import PanelDeControl from './pages/PanelDeControl';
+import Habitaciones from './pages/Habitaciones';
+import Reservas from './pages/Reservas';
+import Usuarios from './pages/Usuarios';
 import Autenticacion from './pages/Autenticacion';
+import logo from './assets/logo.png';
 
 // Light theme configuration
 const lightTheme = createTheme({
@@ -45,12 +46,30 @@ function AppContent() {
       <main style={{ flexGrow: 1, padding: isLoginPage ? '0' : '24px', marginTop: isLoginPage ? '0' : '64px' }}>
         <Routes>
           <Route path="/login" element={<Autenticacion />} />
-          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/rooms" element={<ProtectedRoute><Rooms /></ProtectedRoute>} />
-          <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
-          <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><PanelDeControl /></ProtectedRoute>} />
+          <Route path="/habitaciones" element={<ProtectedRoute><Habitaciones /></ProtectedRoute>} />
+          <Route path="/reservas" element={<ProtectedRoute><Reservas /></ProtectedRoute>} />
+          <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
         </Routes>
       </main>
+
+      {/* Logo en la esquina inferior derecha */}
+      {!isLoginPage && user && (
+        <Box
+          component="img"
+          src={logo}
+          alt="Logo"
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+            width: { xs: 100, sm: 120 },
+            height: 'auto',
+            zIndex: 1000,
+          
+          }}
+        />
+      )}
     </div>
   );
 }

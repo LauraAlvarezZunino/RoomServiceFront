@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import {
-  Container, Box, TextField, Card, CardContent,
-  Alert, Link, Typography, Button, Grid, CircularProgress
+  Container, Box, Card, CardContent, Alert
 } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
-// Removida: import NavegacionSecundaria from '../components/NavegacionSecundaria';
+import FormularioRegistro from '../components/FormularioRegistro';
+import FormularioLogin from '../components/FormularioLogin';
+import BotonSubmit from '../components/BotonSubmit';
+import EnlaceToggle from '../components/EnlaceToggle';
+import CabeceraAuth from '../components/CabeceraAuth';
 
 // Estado inicial del formulario
 const initialFormState = {
@@ -36,10 +38,11 @@ export default function Autenticacion() {
   const validarCampos = () => {
     const { email, password, nombreApellido, dni, telefono } = formData;
     
+    // Validar Email y Contraseña básicos
     if (!email || !password) return false;
     
     if (esRegistro) {
-      // Agrega más validaciones aquí, como longitud mínima de contraseña
+      // Validar campos adicionales de registro y longitud mínima de contraseña
       return nombreApellido && dni && telefono && password.length >= 6;
     }
     
@@ -49,7 +52,10 @@ export default function Autenticacion() {
   const manejarEnvioFormulario = async (evento) => {
     evento.preventDefault();
     if (!validarCampos()) {
-      establecerErrorAuth('Por favor, completa todos los campos requeridos.');
+      // Evitar sobrescribir errores específicos de campo si ya existen
+      if (!errorAuth) {
+        establecerErrorAuth('Por favor, completa todos los campos requeridos.');
+      }
       return;
     }
 
@@ -63,7 +69,7 @@ export default function Autenticacion() {
         if (result.success) {
           establecerErrorAuth('¡Registro exitoso! Por favor, inicia sesión.');
           establecerEsRegistro(false);
-          // Opcional: limpiar la contraseña y el resto del formulario
+          // Limpiar datos sensibles después del registro
           establecerFormData(prev => ({ ...initialFormState, email: prev.email }));
         } else {
           establecerErrorAuth(result.error || 'Error al registrar.');
@@ -85,30 +91,26 @@ export default function Autenticacion() {
   };
 
   return (
-    // 3. Estilos de Pantalla Completa (Full Screen)
+    // CONTENEDOR PRINCIPAL: Centrado Horizontal y Vertical
     <Box
       sx={{
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        width: '100vw',
+        alignItems: 'center',    // Centra verticalmente el Container
+        justifyContent: 'center', // Centra horizontalmente el Container
+        minHeight: '100vh',      // Ocupa la altura completa de la vista
+        width: '100%',
         backgroundColor: (theme) => theme.palette.grey[50],
         px: { xs: 2, sm: 3 },
-        py: { xs: 2, sm: 4 },
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        py: { xs: 4, sm: 8 },
       }}
     >
       <Container
         component="main"
-        maxWidth="sm"
+        maxWidth="sm" // Usa el valor 'sm' de Material UI para manejar el ancho automáticamente
         sx={{
           width: '100%',
-          maxWidth: { xs: '100%', sm: 400 },
+          maxWidth: 400, // Forzar un ancho máximo específico si 'sm' no es suficiente (aprox. 400px)
+          margin: '0 auto', // Garantiza el centrado horizontal
         }}
       >
         <Card
@@ -118,69 +120,33 @@ export default function Autenticacion() {
             maxWidth: '100%',
           }}
         >
+          {/* CONTENIDO DE LA TARJETA: Centrado Interno */}
           <CardContent
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
-              p: { xs: 2, sm: 4 }, // Padding responsive
+              alignItems: 'center', // Centra el icono y el título
+              p: { xs: 2, sm: 4 },
             }}
           >
-            <LockOutlinedIcon
-              color="primary"
-              sx={{
-                fontSize: { xs: 32, sm: 40 }, // Icon size responsive
-                mb: 2
-              }}
-            />
-            <Typography
-              component="h1"
-              variant="h5"
-              sx={{
-                mb: 3,
-                fontSize: { xs: '1.5rem', sm: '1.875rem' }, // Title size responsive
-                textAlign: 'center'
-              }}
-            >
-              {esRegistro ? 'Crea tu Cuenta' : 'Iniciar Sesión'}
-            </Typography>
-            
+            <CabeceraAuth esRegistro={esRegistro} />
+
             <Box component="form" onSubmit={manejarEnvioFormulario} noValidate sx={{ width: '100%', mt: 1 }}>
-              
-              {/* Campos principales */}
-              <TextField
-                margin="normal" required fullWidth id="email" label="Correo Electrónico" 
-                autoComplete="email" autoFocus type="email" name="email"
-                value={formData.email} onChange={manejarCambioInput}
-                error={!!errorAuth && !formData.email} // Muestra error si falta
-              />
-              <TextField
-                margin="normal" required fullWidth name="password" label="Contraseña"
-                type="password" id="password" autoComplete={esRegistro ? 'new-password' : 'current-password'}
-                value={formData.password} onChange={manejarCambioInput}
-                helperText={esRegistro && 'Mínimo 6 caracteres.'}
-                error={!!errorAuth && !formData.password}
+
+              <FormularioLogin
+                formData={formData}
+                manejarCambioInput={manejarCambioInput}
+                errorAuth={errorAuth}
+                esRegistro={esRegistro}
               />
 
-              {/* Campos de Registro */}
+              {/* Campos de Registro Condicionales */}
               {esRegistro && (
-                <>
-                  <TextField
-                    margin="normal" required fullWidth id="nombreApellido" label="Nombre y Apellido"
-                    autoComplete="name" name="nombreApellido"
-                    value={formData.nombreApellido} onChange={manejarCambioInput}
-                  />
-                  <TextField
-                    margin="normal" required fullWidth id="dni" label="DNI"
-                    autoComplete="off" name="dni" type="number"
-                    value={formData.dni} onChange={manejarCambioInput}
-                  />
-                  <TextField
-                    margin="normal" required fullWidth id="telefono" label="Teléfono"
-                    autoComplete="tel" name="telefono" type="tel"
-                    value={formData.telefono} onChange={manejarCambioInput}
-                  />
-                </>
+                <FormularioRegistro
+                  formData={formData}
+                  manejarCambioInput={manejarCambioInput}
+                  errorAuth={errorAuth}
+                />
               )}
 
               {/* Manejo de Errores */}
@@ -189,38 +155,19 @@ export default function Autenticacion() {
                   {errorAuth}
                 </Alert>
               )}
-              
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                sx={{
-                  mt: 3,
-                  mb: 2,
-                  py: { xs: 1.5, sm: 1.75 }, // Button padding responsive
-                  fontSize: { xs: '0.9rem', sm: '1rem' } // Button text size responsive
-                }}
-                disabled={cargando || !validarCampos()}
-              >
-                {cargando ? <CircularProgress size={24} color="inherit" /> : (esRegistro ? 'Registrarse' : 'Iniciar Sesión')}
-              </Button>
-              
-              <Grid container justifyContent="flex-end">
-                <Grid >
-                  <Link 
-                    component="button" 
-                    variant="body2" 
-                    onClick={() => {
-                        establecerEsRegistro(!esRegistro);
-                        establecerErrorAuth(''); // Limpiar errores al cambiar de modo
-                        establecerFormData(initialFormState); // Limpiar el formulario
-                    }}
-                  >
-                    {esRegistro ? '¿Ya tienes una cuenta? Inicia Sesión' : '¿No tienes cuenta? Regístrate'}
-                  </Link>
-                </Grid>
-              </Grid>
+
+              <BotonSubmit
+                cargando={cargando}
+                validarCampos={validarCampos}
+                esRegistro={esRegistro}
+              />
+
+              <EnlaceToggle
+                esRegistro={esRegistro}
+                onToggle={establecerEsRegistro}
+                onClearError={establecerErrorAuth}
+                onResetForm={() => establecerFormData(initialFormState)}
+              />
             </Box>
           </CardContent>
         </Card>
