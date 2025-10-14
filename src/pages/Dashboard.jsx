@@ -4,19 +4,32 @@ import HotelIcon from '@mui/icons-material/Hotel';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import PeopleIcon from '@mui/icons-material/People';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { useAuth } from '../contexts/AuthContext';
 
 const Dashboard = () => {
-  const stats = [
+  const { user, isAdmin } = useAuth();
+
+  const adminStats = [
     { title: 'Habitaciones Totales', value: '25', icon: <HotelIcon />, color: '#90caf9' },
     { title: 'Reservas Activas', value: '12', icon: <EventNoteIcon />, color: '#f48fb1' },
     { title: 'Usuarios Registrados', value: '150', icon: <PeopleIcon />, color: '#81c784' },
     { title: 'Notificaciones', value: '5', icon: <NotificationsIcon />, color: '#ffb74d' },
   ];
 
+  const userStats = [
+    { title: 'Mis Reservas', value: '3', icon: <EventNoteIcon />, color: '#f48fb1' },
+    { title: 'Reservas Activas', value: '1', icon: <HotelIcon />, color: '#90caf9' },
+  ];
+
+  const stats = isAdmin ? adminStats : userStats;
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 2 }}>
-        Dashboard
+        Dashboard - {isAdmin ? 'Administrador' : 'Usuario'}
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        Bienvenido, {user?.nombreApellido}
       </Typography>
       <Grid container spacing={3}>
         {stats.map((stat, index) => (
@@ -39,12 +52,15 @@ const Dashboard = () => {
       </Grid>
       <Box sx={{ mt: 4 }}>
         <Typography variant="h5" component="h2" gutterBottom>
-          Actividad Reciente
+          {isAdmin ? 'Actividad Reciente' : 'Mis Reservas Recientes'}
         </Typography>
         <Card>
           <CardContent>
             <Typography variant="body1">
-              Aquí se mostrarían las actividades recientes del sistema, como nuevas reservas, check-ins, etc.
+              {isAdmin
+                ? 'Aquí se mostrarían las actividades recientes del sistema, como nuevas reservas, check-ins, etc.'
+                : 'Aquí se mostrarían tus reservas recientes y próximas.'
+              }
             </Typography>
           </CardContent>
         </Card>

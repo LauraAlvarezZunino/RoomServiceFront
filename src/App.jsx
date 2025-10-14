@@ -1,14 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box } from '@mui/material';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Rooms from './pages/Rooms';
 import Reservations from './pages/Reservations';
 import Users from './pages/Users';
+import Autenticacion from './pages/Autenticacion';
 
 // Light theme configuration
 const lightTheme = createTheme({
@@ -30,24 +33,37 @@ const lightTheme = createTheme({
   },
 });
 
+function AppContent() {
+  const { user } = useAuth();
+  const location = useLocation();
+  const isLoginPage = location.pathname === '/login';
+
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      {!isLoginPage && user && <Header />}
+      {!isLoginPage && user && <Sidebar />}
+      <main style={{ flexGrow: 1, padding: isLoginPage ? '0' : '24px', marginTop: isLoginPage ? '0' : '64px' }}>
+        <Routes>
+          <Route path="/login" element={<Autenticacion />} />
+          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/rooms" element={<ProtectedRoute><Rooms /></ProtectedRoute>} />
+          <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
+          <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
-      <Router>
-        <div style={{ display: 'flex', minHeight: '100vh' }}>
-          <Header />
-          <Sidebar />
-          <main style={{ flexGrow: 1, padding: '24px', marginTop: '64px' }}>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/rooms" element={<Rooms />} />
-              <Route path="/reservations" element={<Reservations />} />
-              <Route path="/users" element={<Users />} />
-            </Routes>
-          </main>
-        </div>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

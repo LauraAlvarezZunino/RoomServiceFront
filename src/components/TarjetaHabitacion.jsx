@@ -17,7 +17,7 @@ const getCapacidad = (tipo) => {
 
 export default function TarjetaHabitacion({ habitacion, navegar }) {
   // Usamos las claves de la DB: 'tipo', 'precio' y 'numero'
-  const { id, tipo, precio, numero } = habitacion; 
+  const { id, tipo, precio, numero } = habitacion;
   // Nota: Necesitas añadir una columna 'descripcion_amigable' a tu DB o generarla en el backend
 
   return (
@@ -31,21 +31,21 @@ export default function TarjetaHabitacion({ habitacion, navegar }) {
              {/* Usa una columna 'descripcion' de tu DB si la añades */}
              {tipo === 'familiar' ? 'Amplia opción con espacios conectados.' : 'Detalle de la habitación.'}
           </Typography>
-          
+
           <Typography variant="body1" color="text.primary" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
             <PeopleIcon sx={{ mr: 1 }} /> Capacidad: {getCapacidad(tipo)} personas
           </Typography>
-          
+
           <Typography variant="h6" color="text.primary" sx={{ display: 'flex', alignItems: 'center' }}>
             <AttachMoneyIcon sx={{ mr: 1 }} /> Precio: ${precio} / noche
           </Typography>
-          
+
         </CardContent>
-        
+
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button 
-            size="small" 
-            color="primary" 
+          <Button
+            size="small"
+            color="primary"
             onClick={() => navegar(`/habitacion/${id}`)}
           >
             Ver Detalles y Reservar

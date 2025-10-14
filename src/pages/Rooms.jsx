@@ -3,27 +3,19 @@ import {
   Container,
   Typography,
   Grid,
-  Card,
-  CardContent,
-  CardActions,
   Button,
-  Chip,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
   Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
 } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
+import RoomCard from '../components/RoomCard';
 
 const Rooms = () => {
+  const { isAdmin } = useAuth();
   const [rooms, setRooms] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -55,102 +47,71 @@ const Rooms = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2, mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2, mb: 3, gap:4, }}>
         <Typography variant="h4" component="h1">
           Habitaciones
         </Typography>
-        <Button variant="contained" color="primary">
-          Agregar Habitación
-        </Button>
+        {isAdmin && (
+          <Button variant="contained" color="primary">
+            Agregar Habitación
+          </Button>
+        )}
       </Box>
 
-      <Card>
-        <CardContent>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Número</TableCell>
-                  <TableCell>Tipo</TableCell>
-                  <TableCell>Estado</TableCell>
-                  <TableCell>Precio ($)</TableCell>
-                  <TableCell>Acciones</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rooms.map((room) => (
-                  <TableRow key={room.id}>
-                    <TableCell>{room.numero}</TableCell>
-                    <TableCell>{room.tipo}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={room.estado}
-                        color={room.estado === 'Disponible' ? 'success' : 'error'}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>{room.precio}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleEdit(room)}
-                      >
-                        Editar
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-      </Card>
+      <Grid container spacing={3}>
+        {rooms.map((room) => (
+          <Grid item xs={12} sm={6} md={4} key={room.id}>
+            <RoomCard room={room} onEdit={handleEdit} />
+          </Grid>
+        ))}
+      </Grid>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>Editar Habitación</DialogTitle>
-        <DialogContent>
-          {selectedRoom && (
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="numero"
-                  name="numero"
-                  label="Número"
-                  value={selectedRoom.numero}
-                  onChange={(e) => setSelectedRoom({ ...selectedRoom, numero: e.target.value })}
-                />
+      {isAdmin && (
+        <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+          <DialogTitle>Editar Habitación</DialogTitle>
+          <DialogContent>
+            {selectedRoom && (
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="numero"
+                    name="numero"
+                    label="Número"
+                    value={selectedRoom.numero}
+                    onChange={(e) => setSelectedRoom({ ...selectedRoom, numero: e.target.value })}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="tipo"
+                    name="tipo"
+                    label="Tipo"
+                    value={selectedRoom.tipo}
+                    onChange={(e) => setSelectedRoom({ ...selectedRoom, tipo: e.target.value })}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    id="precio"
+                    name="precio"
+                    label="Precio"
+                    type="number"
+                    value={selectedRoom.precio}
+                    onChange={(e) => setSelectedRoom({ ...selectedRoom, precio: e.target.value })}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="tipo"
-                  name="tipo"
-                  label="Tipo"
-                  value={selectedRoom.tipo}
-                  onChange={(e) => setSelectedRoom({ ...selectedRoom, tipo: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="precio"
-                  name="precio"
-                  label="Precio"
-                  type="number"
-                  value={selectedRoom.precio}
-                  onChange={(e) => setSelectedRoom({ ...selectedRoom, precio: e.target.value })}
-                />
-              </Grid>
-            </Grid>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancelar</Button>
-          <Button onClick={handleSave} variant="contained">Guardar</Button>
-        </DialogActions>
-      </Dialog>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancelar</Button>
+            <Button onClick={handleSave} variant="contained">Guardar</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </Container>
   );
 };

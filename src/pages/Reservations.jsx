@@ -22,9 +22,11 @@ import {
   TableRow,
   Paper,
 } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 import api from '../servicios/api';
 
 const Reservations = () => {
+  const { user, isAdmin } = useAuth();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -48,12 +50,16 @@ const Reservations = () => {
           id: reservation.id,
           habitacion: reservation.habitacion.numero,
           cliente: `Usuario ${reservation.usuarioId}`, // You might need to fetch user data separately
+          usuarioId: reservation.usuarioId,
           fechaInicio: reservation.fechaInicio,
           fechaFin: reservation.fechaFin,
+          costo: reservation.costo,
           estado: 'Confirmada', // API doesn't seem to have status, adjust based on your logic
         }));
 
-        setReservations(transformedData);
+        // Filter reservations for non-admin users
+        const filteredData = isAdmin ? transformedData : transformedData.filter(res => res.usuarioId === user.id);
+        setReservations(filteredData);
       } catch (err) {
         setError(err.message);
         console.error('Error fetching reservations:', err);
@@ -140,9 +146,11 @@ const Reservations = () => {
         <Typography variant="h4" component="h1">
           Reservas
         </Typography>
-        <Button variant="contained" color="primary">
-          Nueva Reserva
-        </Button>
+        {isAdmin && (
+          <Button variant="contained" color="primary">
+            Nueva Reserva
+          </Button>
+        )}
       </Box>
 
       <Card>
@@ -152,9 +160,10 @@ const Reservations = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Habitación</TableCell>
-                  <TableCell>Cliente</TableCell>
+                  {isAdmin && <TableCell>Cliente</TableCell>}
                   <TableCell>Fecha Inicio</TableCell>
                   <TableCell>Fecha Fin</TableCell>
+                  <TableCell>Costo</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
@@ -163,9 +172,10 @@ const Reservations = () => {
                 {reservations.map((reservation) => (
                   <TableRow key={reservation.id}>
                     <TableCell>{reservation.habitacion}</TableCell>
-                    <TableCell>{reservation.cliente}</TableCell>
+                    {isAdmin && <TableCell>{reservation.cliente}</TableCell>}
                     <TableCell>{reservation.fechaInicio}</TableCell>
                     <TableCell>{reservation.fechaFin}</TableCell>
+                    <TableCell>${reservation.costo}</TableCell>
                     <TableCell>
                       <Chip
                         label={reservation.estado}
